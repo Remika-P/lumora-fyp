@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+
 const styles = {
   container: {
     minHeight: '100vh',
@@ -437,5 +438,6 @@ const VerifyOTP = () => {
     </div>
   );
 };
+
 
 export default VerifyOTP;
