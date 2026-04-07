@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserIcon, MailIcon, LockIcon, EyeIcon, EyeOffIcon, CheckIcon } from "./icons";
 
+
 const styles = {
   container: {
     minHeight: "100vh",
@@ -408,6 +409,5 @@ const Signup = () => {
     </div>
   );
 };
-
 
 export default Signup;
