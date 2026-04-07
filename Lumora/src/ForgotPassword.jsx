@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createBaseStyles, animationStyles, authColors } from './authStyles';
 import { MailIcon, CheckIcon, ArrowLeftIcon } from './icons';
 
+
 const ForgotPassword = () => {
   const styles = createBaseStyles();
   const [email, setEmail] = useState('');
@@ -193,5 +194,6 @@ const ForgotPassword = () => {
     </div>
   );
 };
+
 
 export default ForgotPassword;
