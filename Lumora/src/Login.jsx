@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 // Icon components (simple SVG icons)
 const MailIcon = ({ size = 20, color = '#9B8B7E' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -751,5 +752,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
