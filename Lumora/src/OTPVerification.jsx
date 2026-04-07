@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { createBaseStyles, animationStyles, authColors } from './authStyles';
 import { CheckIcon } from './icons';
 
+
 const OTPVerification = () => {
   const styles = createBaseStyles();
   const location = useLocation();
@@ -321,5 +322,6 @@ const OTPVerification = () => {
     </div>
   );
 };
+
 
 export default OTPVerification;
