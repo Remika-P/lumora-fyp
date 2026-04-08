@@ -3,6 +3,23 @@ import Groq from 'groq-sdk';
 
 const router = express.Router();
 
+const buildSearchUrl = (site, searchQuery) => {
+  const keyword = searchQuery.replace(/\s+/g, '+');
+  const encoded = encodeURIComponent(searchQuery);
+  switch (site.toLowerCase()) {
+    case 'amazon':
+      return `https://www.amazon.com/s?k=${encoded}`;
+    case 'wayfair':
+      return `https://www.wayfair.com/keyword.php?keyword=${keyword}`;
+    case 'aliexpress':
+      return `https://www.aliexpress.com/w/wholesale-${keyword}.html`;
+    case 'pepperfry':
+  return `https://www.pepperfry.com/site_product/search?q=${encoded}`;
+    default:
+      return `https://www.amazon.com/s?k=${encoded}`;
+  }
+};
+
 
 router.post('/', async (req, res) => {
   try {
@@ -79,7 +96,10 @@ Make the searchQuery specific and realistic. Replace spaces with + in the amazon
       }
       
       // Ensure minimum of 8 products (truncate if more, but should request exactly 8)
-      recommendations = recommendations.slice(0, 8);
+      recommendations = recommendations.slice(0, 8).map((product) => ({
+        ...product,
+        amazonUrl: buildSearchUrl(product.site, product.searchQuery),
+      }));
       
     } catch (parseError) {
       console.error('Groq JSON parse error:', parseError);
