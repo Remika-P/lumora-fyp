@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 // Icon components (simple SVG icons)
 const MailIcon = ({ size = 20, color = '#9B8B7E' }) => (
@@ -87,7 +89,7 @@ const styles = {
   },
   wrapper: {
     width: '100%',
-    maxWidth: '480px',
+    maxWidth: '620px',
     animation: 'fadeIn 0.9s ease-out',
     position: 'relative',
     zIndex: 10,
@@ -99,7 +101,7 @@ const styles = {
   logo: {
     width: '100px',
     height: '100px',
-    margin: '0 auto 60px',
+    margin: '-28px auto 26px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -118,7 +120,7 @@ const styles = {
   },
   card: {
     width: '100%',
-    padding: '80px 52px 56px 52px',
+    padding: '52px 52px 56px 52px',
     backgroundColor: 'rgba(255, 255, 255, 0.98)',
     borderRadius: '32px',
     boxShadow: '0 60px 100px rgba(107, 93, 80, 0.18), 0 20px 40px rgba(107, 93, 80, 0.1), 0 4px 12px rgba(107, 93, 80, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 1px rgba(0, 0, 0, 0.02)',
@@ -129,7 +131,7 @@ const styles = {
   },
   cardTitle: {
     textAlign: 'center',
-    margin: '0 0 32px 0',
+    margin: '0 0 22px 0',
     fontSize: '40px',
     fontWeight: '600',
     color: '#5A4A3F',
@@ -176,7 +178,7 @@ const styles = {
     animation: 'slideDown 0.4s ease-out',
   },
   formGroup: {
-    marginBottom: '28px',
+    marginBottom: '24px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -348,7 +350,7 @@ const styles = {
   },
 };
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -368,6 +370,63 @@ const Login = () => {
     return regex.test(email);
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    
+    try {
+      const authCode = credentialResponse.code;
+      
+      if (!authCode) {
+        setError('Failed to get Google authorization code');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/google-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: authCode,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Login successful! Redirecting...');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setIsAuthenticated(true);
+        setTimeout(() => {
+          navigate('/app');
+        }, 1000);
+      } else {
+        setError(data.message || 'Google login failed');
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: (error) => {
+      console.error('Google login error:', error);
+      setError('Google login failed. Please try again.');
+      setLoading(false);
+    },
+    flow: 'auth-code',
+    ux_mode: 'popup',
+    scope: 'openid email profile',
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -386,7 +445,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -400,8 +459,9 @@ const Login = () => {
         setSuccess('Login successful! Redirecting...');
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+        setIsAuthenticated(true);
         setTimeout(() => {
-          navigate('/');
+          navigate('/dashboard');
         }, 1000);
       } else {
         setError(data.message || 'Invalid email or password');
@@ -511,6 +571,14 @@ const Login = () => {
           cursor: pointer;
         }
 
+        button:focus,
+        button:focus-visible,
+        a:focus,
+        a:focus-visible {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+
         a {
           position: relative;
         }
@@ -567,6 +635,7 @@ const Login = () => {
             opacity: 0.5;
           }
         }
+
       `}</style>
 
       {/* Decorative blur elements */}
@@ -574,7 +643,7 @@ const Login = () => {
       <div style={styles.blurElement2}></div>
       <div style={styles.blurElement3}></div>
 
-      <div style={styles.wrapper}>
+      <div style={styles.wrapper} className="scrollbar-hide">
         <div style={styles.header}></div>
 
         <div style={styles.card}>
@@ -732,6 +801,45 @@ const Login = () => {
             <div style={styles.dividerLine}></div>
           </div>
 
+          {/* Google Login Button */}
+          <button
+            type="button"
+            onClick={() => googleLogin()}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '16px 18px',
+              marginBottom: '32px',
+              fontSize: '16px',
+              fontWeight: '600',
+              fontFamily: '"Poppins", sans-serif',
+              color: '#5A4A3F',
+              backgroundColor: '#FFFFFF',
+              border: '2px solid #E8DDD0',
+              borderRadius: '16px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              letterSpacing: '0.2px',
+              textTransform: 'none',
+              boxShadow: '0 4px 12px rgba(217, 204, 189, 0.15)',
+              opacity: loading ? 0.6 : 1,
+            }}
+            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#F5F1ED')}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = '#FFFFFF')}
+          >
+            <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.3 0 6.2 1.1 8.5 3.2l6.3-6.3C34.9 2.8 29.8.5 24 .5 14.8.5 6.8 5.8 2.8 13.5l7.7 6C12.3 13.5 17.7 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4.1H24v8h12.9c-.3 2-1.8 5-5.1 7l7.8 6c4.6-4.3 7.3-10.6 7.3-16.9z"/>
+              <path fill="#FBBC05" d="M10.5 28.5c-.5-1.5-.8-3-.8-4.5s.3-3 .8-4.5l-7.7-6C1 17.1 0 20.5 0 24s1 6.9 2.8 10.5l7.7-6z"/>
+              <path fill="#34A853" d="M24 47.5c6.3 0 11.6-2.1 15.5-5.7l-7.8-6c-2 1.4-4.6 2.2-7.7 2.2-6.3 0-11.7-4-13.5-9.5l-7.7 6C6.8 42.2 14.8 47.5 24 47.5z"/>
+            </svg>
+            Sign in with Google
+          </button>
+
           {/* Create Account Link */}
           <p style={styles.authText}>
             Don't have an account?{' '}
@@ -752,6 +860,5 @@ const Login = () => {
     </div>
   );
 };
-
 
 export default Login;

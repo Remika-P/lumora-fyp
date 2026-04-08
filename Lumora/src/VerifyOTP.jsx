@@ -1,281 +1,272 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { createBaseStyles, authColors } from './authStyles';
+import { CheckIcon } from './icons';
 
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'linear-gradient(135deg, #F5F1ED 0%, #EAE0D5 100%)',
-    fontFamily: '"Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
-    padding: '0',
-  },
-  wrapper: {
-    width: '100%',
-    maxWidth: '440px',
-    animation: 'fadeIn 0.6s ease-out',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '0',
-  },
-  card: {
-    width: '100%',
-    padding: '40px 40px 48px 40px',
-    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-    borderRadius: '24px',
-    boxShadow: '0 24px 48px rgba(107, 93, 80, 0.12), 0 8px 16px rgba(107, 93, 80, 0.06)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(217, 204, 189, 0.4)',
-  },
-  logo: {
-    width: '100px',
-    height: '100px',
-    margin: '0 auto 28px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, #F5F1ED 0%, #EAE0D5 100%)',
-    boxShadow: '0 8px 24px rgba(217, 204, 189, 0.2)',
-    animation: 'slideDown 0.6s ease-out',
-    overflow: 'hidden',
-  },
-  logoImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    borderRadius: '50%',
-  },
-  cardTitle: {
-    textAlign: 'center',
-    margin: '0 0 12px 0',
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#5A4A3F',
-    letterSpacing: '-0.3px',
-  },
-  cardSubtitle: {
-    textAlign: 'center',
-    fontSize: '14px',
-    color: '#9B8B7E',
-    fontWeight: '400',
-    margin: '0 0 8px 0',
-  },
-  email: {
-    fontSize: '15px',
-    fontWeight: '600',
-    color: '#D9CCBD',
-    margin: '0 0 32px 0',
-    textAlign: 'center',
-  },
-  errorMessage: {
-    padding: '14px 18px',
-    marginBottom: '24px',
-    backgroundColor: '#FCE8E6',
-    border: '1px solid #EFCCC1',
-    borderRadius: '12px',
-    color: '#B71C1C',
-    fontSize: '13px',
-    fontWeight: '500',
-  },
-  successMessage: {
-    padding: '14px 18px',
-    marginBottom: '24px',
-    backgroundColor: '#E8F5E9',
-    border: '1px solid #C8E6C9',
-    borderRadius: '12px',
-    color: '#2E7D32',
-    fontSize: '13px',
-    fontWeight: '500',
-  },
-  formGroup: {
-    marginBottom: '24px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '10px',
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#5A4A3F',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  },
-  input: {
-    width: '100%',
-    padding: '16px',
-    fontSize: '24px',
-    letterSpacing: '8px',
-    textAlign: 'center',
-    border: '2px solid #E8DDD0',
-    borderRadius: '14px',
-    boxSizing: 'border-box',
-    transition: 'all 0.3s ease',
-    outline: 'none',
-    fontWeight: '700',
-    fontFamily: 'monospace',
-    backgroundColor: '#FAFAF9',
-    color: '#5A4A3F',
-  },
-  inputFocus: {
-    borderColor: '#D9CCBD',
-    backgroundColor: '#FFFFFF',
-    boxShadow: '0 0 0 5px rgba(217, 204, 189, 0.12)',
-  },
-  button: {
-    width: '100%',
-    padding: '14px 16px',
-    fontSize: '15px',
-    fontWeight: '600',
-    color: '#FFFFFF',
-    backgroundColor: '#D9CCBD',
-    border: 'none',
-    borderRadius: '14px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    letterSpacing: '0.5px',
-    textTransform: 'uppercase',
-    boxShadow: '0 8px 20px rgba(217, 204, 189, 0.25)',
-  },
-  buttonHover: {
-    backgroundColor: '#C8BDAA',
-    boxShadow: '0 12px 32px rgba(217, 204, 189, 0.35)',
-    transform: 'translateY(-3px)',
-  },
-  buttonDisabled: {
-    backgroundColor: '#E8DDD0',
-    cursor: 'not-allowed',
-    opacity: 0.6,
-    boxShadow: 'none',
-  },
-  timerBox: {
-    marginTop: '32px',
-    padding: '24px',
-    backgroundColor: '#F9F7F5',
-    borderRadius: '14px',
-    border: '1px solid #E8DDD0',
-  },
-  timerText: {
-    fontSize: '14px',
-    color: '#9B8B7E',
-    margin: '0 0 16px 0',
-    fontWeight: '500',
-  },
-  timerValue: {
-    fontWeight: '700',
-    fontSize: '18px',
-    color: '#D9CCBD',
-  },
-  resendButton: {
-    backgroundColor: 'transparent',
-    border: '2px solid #D9CCBD',
-    color: '#D9CCBD',
-    padding: '12px 16px',
-    borderRadius: '14px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '600',
-    transition: 'all 0.3s ease',
-    width: '100%',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  },
-  resendButtonHover: {
-    backgroundColor: '#D9CCBD',
-    color: 'white',
-    boxShadow: '0 8px 20px rgba(217, 204, 189, 0.25)',
-  },
-  resendButtonDisabled: {
-    borderColor: '#E8DDD0',
-    color: '#C8BDAA',
-    cursor: 'not-allowed',
-    opacity: 0.5,
-  },
-  footerText: {
-    textAlign: 'center',
-    marginTop: '28px',
-    fontSize: '14px',
-    color: '#9B8B7E',
-  },
-  link: {
-    color: '#D9CCBD',
-    textDecoration: 'none',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'color 0.3s ease',
-  },
-};
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const VerifyOTP = () => {
-  const [otp, setOtp] = useState('');
+  const baseStyles = createBaseStyles();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const email = location.state?.email || '';
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const inputRefs = useRef([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
+  const [otpExpirySeconds, setOtpExpirySeconds] = useState(600);
+  const [resendCountdown, setResendCountdown] = useState(0);
   const [buttonHover, setButtonHover] = useState(false);
-  const [resendButtonHover, setResendButtonHover] = useState(false);
-  const [otpFocus, setOtpFocus] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
-  const location = useLocation();
-  const navigate = useNavigate();
-  const email = location.state?.email;
+  const [buttonActive, setButtonActive] = useState(false);
+  const [resendHover, setResendHover] = useState(false);
+  const [backLinkHover, setBackLinkHover] = useState(false);
+
+  const styles = {
+    ...baseStyles,
+    container: {
+      ...baseStyles.container,
+      minHeight: '100vh',
+      padding: '20px',
+    },
+    wrapper: {
+      ...baseStyles.wrapper,
+      maxWidth: '680px',
+    },
+    header: {
+      textAlign: 'center',
+      marginBottom: '0',
+    },
+    logo: {
+      width: '90px',
+      height: '90px',
+      margin: '-22px auto 18px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #F5F1ED 0%, #EAE0D5 100%)',
+      boxShadow: '0 12px 36px rgba(217, 204, 189, 0.25)',
+      animation: 'slideDown 0.6s ease-out',
+      overflow: 'hidden',
+      position: 'relative',
+    },
+    logoImg: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      borderRadius: '24px',
+    },
+    card: {
+      ...baseStyles.card,
+      padding: 'clamp(60px, 8.3vh, 78px) clamp(52px, 5.4vw, 64px) clamp(62px, 7.5vh, 76px) clamp(52px, 5.4vw, 64px)',
+      backgroundColor: '#FFFFFF',
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.08)',
+      border: 'none',
+      overflow: 'hidden',
+    },
+    cardGlow: {
+      display: 'none',
+    },
+    cardInner: {
+      position: 'relative',
+      zIndex: 1,
+    },
+    cardTitle: {
+      ...baseStyles.cardTitle,
+      margin: '0 0 12px 0',
+      fontSize: '40px',
+      lineHeight: '1.2',
+      textShadow: '0 1px 0 rgba(255, 255, 255, 0.7)',
+    },
+    cardSubtitle: {
+      ...baseStyles.cardSubtitle,
+      margin: '0 0 12px 0',
+      fontSize: '15px',
+      fontWeight: '400',
+      letterSpacing: '0.4px',
+      lineHeight: '1.65',
+      opacity: 0.85,
+    },
+    email: {
+      textAlign: 'center',
+      margin: '0 0 30px 0',
+      fontSize: '15px',
+      color: authColors.text,
+      fontWeight: '600',
+      lineHeight: '1.5',
+      letterSpacing: '0.15px',
+    },
+    otpTimerBox: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      padding: '12px 20px',
+      borderRadius: '14px',
+      background: 'linear-gradient(135deg, rgba(217, 204, 189, 0.25) 0%, rgba(200, 189, 170, 0.15) 100%)',
+      border: '2px solid rgba(217, 204, 189, 0.4)',
+      boxShadow: '0 8px 20px rgba(217, 204, 189, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.5)',
+      backdropFilter: 'blur(10px)',
+    },
+    otpTimerLabel: {
+      color: authColors.textSecondary,
+      fontWeight: '600',
+      fontSize: '13px',
+      letterSpacing: '0.3px',
+    },
+    otpTimerValue: {
+      color: authColors.primaryDark,
+      fontWeight: '800',
+      fontSize: '18px',
+      minWidth: '50px',
+      textAlign: 'center',
+      fontVariantNumeric: 'tabular-nums',
+      letterSpacing: '1.2px',
+      textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+    },
+    otpGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(6, 1fr)',
+      gap: '14px',
+      marginBottom: '32px',
+    },
+    otpInput: {
+      width: '100%',
+      minHeight: '76px',
+      padding: '18px 8px',
+      fontSize: '24px',
+      fontWeight: '700',
+      border: `2px solid ${authColors.border}`,
+      borderRadius: '18px',
+      textAlign: 'center',
+      backgroundColor: authColors.white,
+      color: authColors.text,
+      transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+      outline: 'none',
+      boxShadow: 'none',
+    },
+    divider: {
+      ...baseStyles.divider,
+      margin: '28px 0 20px 0',
+    },
+    authText: {
+      ...baseStyles.authText,
+      marginTop: '22px',
+    },
+  };
 
   useEffect(() => {
-    // Redirect if no email provided
     if (!email) {
       navigate('/signup');
     }
-
-    // Timer for OTP expiry
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, [email, navigate]);
 
-  const formatTime = (seconds) => {
+  useEffect(() => {
+    if (resendCountdown > 0) {
+      const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [resendCountdown]);
+
+  useEffect(() => {
+    if (otpExpirySeconds > 0) {
+      const timer = setTimeout(() => setOtpExpirySeconds(otpExpirySeconds - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [otpExpirySeconds]);
+
+  const formatCountdown = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const handleVerifyOTP = async (e) => {
+  const handleOtpChange = (e, index) => {
+    const value = e.target.value;
+
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+    setError('');
+
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
     e.preventDefault();
-    setLoading(true);
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    const newOtp = [...otp];
+
+    pastedData.split('').forEach((digit, index) => {
+      if (index < 6) {
+        newOtp[index] = digit;
+      }
+    });
+
+    setOtp(newOtp);
+    if (pastedData.length === 6) {
+      inputRefs.current[5]?.focus();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError('');
     setSuccess('');
 
-    if (!otp || otp.length !== 6) {
-      setError('Please enter a valid 6-digit OTP');
-      setLoading(false);
+    if (otpExpirySeconds <= 0) {
+      setError('OTP expired. Please resend a new code.');
       return;
     }
 
+    const otpCode = otp.join('');
+
+    if (otpCode.length !== 6) {
+      setError('Please enter all 6 digits');
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp: otpCode }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+
         setSuccess('Email verified successfully! Redirecting...');
-        // Store token and user info
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        // Redirect after a short delay
         setTimeout(() => {
-          window.location.href = '/';
+          navigate('/dashboard');
         }, 1500);
       } else {
-        setError(data.message);
+        setError(data.message || 'Invalid OTP. Please try again.');
       }
     } catch (err) {
       setError('Network error. Please try again.');
@@ -284,13 +275,13 @@ const VerifyOTP = () => {
     }
   };
 
-  const handleResendOTP = async () => {
-    setResendLoading(true);
+  const handleResend = async () => {
     setError('');
     setSuccess('');
+    setResendCountdown(60);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/resend-otp', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/resend-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -301,43 +292,43 @@ const VerifyOTP = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('New OTP sent to your email!');
-        setTimeLeft(600);
-        setOtp('');
+        setSuccess('New code sent to your email!');
+        setOtp(['', '', '', '', '', '']);
+        setOtpExpirySeconds(600);
       } else {
-        setError(data.message);
+        setError(data.message || 'Failed to resend code. Please try again.');
       }
     } catch (err) {
       setError('Network error. Please try again.');
-    } finally {
-      setResendLoading(false);
     }
   };
 
+  const buttonDisabled = loading || otpExpirySeconds <= 0;
+  const otpCode = otp.join('');
+
   const buttonStyle = {
     ...styles.button,
-    ...(buttonHover && !loading && styles.buttonHover),
-    ...(loading && styles.buttonDisabled),
+    opacity: buttonDisabled ? 0.6 : 1,
+    cursor: buttonDisabled ? 'not-allowed' : 'pointer',
+    backgroundColor: buttonActive ? authColors.primaryDark : buttonHover && !buttonDisabled ? 'rgba(139, 125, 107, 0.9)' : authColors.primary,
+    transform: buttonActive ? 'scale(0.98)' : 'scale(1)',
+    boxShadow: buttonHover && !buttonDisabled ? '0 16px 40px rgba(139, 125, 107, 0.3)' : '0 8px 20px rgba(139, 125, 107, 0.2)',
   };
 
-  const otpInputStyle = {
-    ...styles.input,
-    ...(otpFocus && styles.inputFocus),
-  };
-
-  const resendButtonStyle = {
-    ...styles.resendButton,
-    ...(resendButtonHover && !resendLoading && !(timeLeft > 300 || resendLoading) && styles.resendButtonHover),
-    ...((resendLoading || timeLeft > 300) && styles.resendButtonDisabled),
+  const resendDisabled = resendCountdown > 0 || loading;
+  const resendStyle = {
+    ...styles.authText,
+    color: resendDisabled ? authColors.textSecondary : authColors.primary,
+    cursor: resendDisabled ? 'not-allowed' : 'pointer',
+    opacity: resendDisabled ? 0.6 : 1,
+    transition: 'all 0.3s ease',
+    textDecoration: 'none',
+    fontSize: '14px',
   };
 
   return (
     <div style={styles.container}>
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
         @keyframes slideDown {
           from {
             opacity: 0;
@@ -348,96 +339,228 @@ const VerifyOTP = () => {
             transform: translateY(0);
           }
         }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        .otp-input:focus {
+          border-color: ${authColors.primary} !important;
+          box-shadow: 0 0 0 3px rgba(217, 204, 189, 0.1) !important;
+        }
+
+        .otp-input.filled {
+          box-shadow: none;
+        }
       `}</style>
 
-      <div style={styles.wrapper}>
-        <div style={styles.header}>
+      <div style={styles.blurElement1}></div>
+      <div style={styles.blurElement2}></div>
+      <div style={styles.blurElement3}></div>
+
+      <div style={styles.wrapper} className="scrollbar-hide">
+        <div style={{
+          position: 'absolute',
+          top: '24px',
+          left: '24px',
+          zIndex: 10,
+        }}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/signup');
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: authColors.primary,
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: '600',
+              letterSpacing: '0.3px',
+              transition: 'all 0.3s ease',
+              padding: '8px 12px',
+              borderRadius: '8px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(217, 204, 189, 0.1)';
+              e.currentTarget.style.color = authColors.primaryDark;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = authColors.primary;
+            }}
+          >
+            <span style={{ fontSize: '18px' }}>←</span>
+            Back to Sign Up
+          </a>
         </div>
 
         <div style={styles.card}>
-          <div style={styles.logo}>
-            <img 
-              src="/Lumora.jpg" 
-              alt="Lumora" 
-              style={styles.logoImg}
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.parentElement.textContent = 'L';
-              }}
-            />
-          </div>
-
-          <h2 style={styles.cardTitle}>Verify Your Email</h2>
-          <p style={styles.cardSubtitle}>We sent a 6-digit code to</p>
-          <p style={styles.email}>{email}</p>
-
-          {error && <div style={styles.errorMessage}>✕ {error}</div>}
-          {success && <div style={styles.successMessage}>✓ {success}</div>}
-
-          <form onSubmit={handleVerifyOTP}>
-            <div style={styles.formGroup}>
-              <label htmlFor="otp" style={styles.label}>Enter OTP Code</label>
-              <input
-                type="text"
-                id="otp"
-                value={otp}
-                onChange={(e) => {
-                  // Only allow digits and max 6 characters
-                  const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
-                  setOtp(value);
+          <div style={styles.cardInner}>
+            <div style={styles.logo}>
+              <img
+                src="/Lumora.jpg"
+                alt="Lumora"
+                style={styles.logoImg}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentElement.textContent = 'L';
                 }}
-                onFocus={() => setOtpFocus(true)}
-                onBlur={() => setOtpFocus(false)}
-                placeholder="000000"
-                maxLength="6"
-                required
-                style={otpInputStyle}
-                disabled={loading}
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading || timeLeft === 0}
-              style={buttonStyle}
-              onMouseEnter={() => !loading && timeLeft !== 0 && setButtonHover(true)}
-              onMouseLeave={() => setButtonHover(false)}
-            >
-              {loading ? '⟳ Verifying...' : 'Verify OTP'}
-            </button>
-          </form>
+            <h1 style={styles.cardTitle}>Verify Code</h1>
+            <p style={styles.cardSubtitle}>Enter the 6-digit code we sent to</p>
+            <p style={styles.email}>{email}</p>
 
-          <div style={styles.timerBox}>
-            <p style={styles.timerText}>
-              OTP expires in:{' '}
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+              <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              padding: '14px 24px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, rgba(217, 204, 189, 0.25) 0%, rgba(200, 189, 170, 0.15) 100%)',
+              border: '2px solid rgba(217, 204, 189, 0.4)',
+              boxShadow: '0 8px 20px rgba(217, 204, 189, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.5)',
+              backdropFilter: 'blur(10px)',
+            }}>
               <span style={{
-                ...styles.timerValue,
-                color: timeLeft > 120 ? '#D9CCBD' : '#E57373'
-              }}>
-                {formatTime(timeLeft)}
-              </span>
-            </p>
-            <button
-              onClick={handleResendOTP}
-              disabled={resendLoading || timeLeft > 300}
-              style={resendButtonStyle}
-              onMouseEnter={() => !(resendLoading || timeLeft > 300) && setResendButtonHover(true)}
-              onMouseLeave={() => setResendButtonHover(false)}
-            >
-              {resendLoading ? '⟳ Resending...' : timeLeft > 300 ? 'Resend in ' + Math.floor((600 - timeLeft) / 60) + ' min' : 'Resend OTP'}
-            </button>
-          </div>
+                color: authColors.textSecondary,
+                fontWeight: '600',
+                fontSize: '14px',
+                letterSpacing: '0.3px',
+              }}>Expires in</span>
+              <span style={{
+                color: authColors.primaryDark,
+                fontWeight: '800',
+                fontSize: '24px',
+                minWidth: '60px',
+                textAlign: 'center',
+                fontVariantNumeric: 'tabular-nums',
+                letterSpacing: '1.5px',
+                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+              }}>{formatCountdown(otpExpirySeconds)}</span>
+            </div>
+            </div>
 
-          <p style={styles.footerText}>
-            <a href="/signup" style={styles.link}>
-              ← Back to Sign Up
-            </a>
-          </p>
+            {error && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 16px',
+                marginBottom: '24px',
+                backgroundColor: '#FDE8E8',
+                border: '1px solid #F5C6C0',
+                borderRadius: '10px',
+                color: '#C85555',
+                fontSize: '13px',
+                fontWeight: '500',
+                letterSpacing: '0.3px',
+              }}>
+                <span style={{ fontSize: '18px', fontWeight: '600', flexShrink: 0 }}>✕</span>
+                <span style={{ lineHeight: '1.4' }}>{error}</span>
+              </div>
+            )}
+            {success && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '14px 16px',
+                marginBottom: '24px',
+                backgroundColor: '#E8F5E9',
+                border: '1px solid #C8E6C9',
+                borderRadius: '10px',
+                color: '#2E7D32',
+                fontSize: '13px',
+                fontWeight: '500',
+                letterSpacing: '0.3px',
+              }}>
+                <CheckIcon size={18} color="#2E7D32" style={{ flexShrink: 0 }} />
+                <span style={{ lineHeight: '1.4' }}>{success}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div style={styles.otpGrid}>
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(ref) => {
+                      inputRefs.current[index] = ref;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength="1"
+                    value={digit}
+                    onChange={(e) => handleOtpChange(e, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={handlePaste}
+                    style={{
+                      ...styles.otpInput,
+                      borderColor: error ? authColors.errorLight : (digit ? authColors.primary : authColors.border),
+                      backgroundColor: digit ? 'rgba(217, 204, 189, 0.05)' : authColors.white,
+                    }}
+                    disabled={loading}
+                    className={`otp-input ${digit ? 'filled' : ''}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="submit"
+                disabled={buttonDisabled}
+                style={buttonStyle}
+                onMouseEnter={() => !buttonDisabled && setButtonHover(true)}
+                onMouseLeave={() => setButtonHover(false)}
+                onMouseDown={() => !buttonDisabled && setButtonActive(true)}
+                onMouseUp={() => setButtonActive(false)}
+              >
+                {loading ? (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⟳</span>
+                    Verifying...
+                  </span>
+                ) : (
+                  'Verify Code'
+                )}
+              </button>
+            </form>
+
+            <p style={{ ...styles.authText, marginTop: '12px' }}>
+              Didn't receive the code?{' '}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!resendDisabled) {
+                    handleResend();
+                  }
+                }}
+                style={resendStyle}
+                onMouseEnter={() => !resendDisabled && setResendHover(true)}
+                onMouseLeave={() => setResendHover(false)}
+              >
+                {resendCountdown > 0 ? `Resend Code (${resendCountdown}s)` : 'Resend Code'}
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default VerifyOTP;

@@ -30,10 +30,12 @@ A user completed a style quiz. Here are their results:
 - Top styles with scores: ${JSON.stringify(topStyles)}
 - Full style scores: ${JSON.stringify(quizAnswers)}
 
-Based on their style profile, recommend exactly 6 furniture products they should buy.
+Based on their style profile, recommend EXACTLY 8 furniture products they should buy.
+IMPORTANT: You MUST return exactly 8 products in the JSON array - no more, no less.
 Each product must perfectly match their ${dominantStyle} style.
+Distribute the products across these marketplaces: Amazon, Wayfair, AliExpress, and Pepperfry.
 
-Return ONLY a valid JSON array with no extra text, no markdown, no code blocks. Just the raw JSON array:
+Return ONLY a valid JSON array with no extra text, no markdown, no code blocks. Just the raw JSON array with exactly 8 items:
 [
   {
     "name": "product name",
@@ -42,9 +44,9 @@ Return ONLY a valid JSON array with no extra text, no markdown, no code blocks. 
     "priceRange": "e.g. $200 - $400",
     "style": "${dominantStyle}",
     "reason": "one sentence explaining why this matches their quiz results",
-    "searchQuery": "exact search terms to find this on Amazon",
-    "amazonUrl": "https://www.amazon.com/s?k=SEARCH+TERMS+HERE",
-    "site": "Amazon"
+    "searchQuery": "exact search terms to find this product",
+    "amazonUrl": "https://relevant-marketplace-link.com/search/...",
+    "site": "Amazon or Wayfair or AliExpress or Pepperfry"
   }
 ]
 
@@ -65,6 +67,20 @@ Make the searchQuery specific and realistic. Replace spaces with + in the amazon
       // Strip any accidental markdown fences
       const cleaned = rawResponse.replace(/```json|```/g, '').trim();
       recommendations = JSON.parse(cleaned);
+      
+      // Ensure we have exactly 8 products
+      if (!Array.isArray(recommendations)) {
+        recommendations = [];
+      }
+      
+      // Log if we didn't get exactly 8
+      if (recommendations.length !== 8) {
+        console.warn(`Expected 8 products, got ${recommendations.length}`);
+      }
+      
+      // Ensure minimum of 8 products (truncate if more, but should request exactly 8)
+      recommendations = recommendations.slice(0, 8);
+      
     } catch (parseError) {
       console.error('Groq JSON parse error:', parseError);
       return res.status(500).json({ message: 'Failed to parse recommendations from AI' });

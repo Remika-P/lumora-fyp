@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { createBaseStyles, animationStyles, authColors } from './authStyles';
-import { MailIcon, CheckIcon, ArrowLeftIcon } from './icons';
+import { LockIcon, CheckIcon, ArrowLeftIcon, EyeIcon, EyeOffIcon } from './icons';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
   const baseStyles = createBaseStyles();
   const styles = {
     ...baseStyles,
     wrapper: {
       ...baseStyles.wrapper,
       maxWidth: '620px',
+      maxHeight: 'calc(100vh - 20px)',
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
     },
     logoImg: {
       width: '100%',
@@ -76,20 +80,42 @@ const ForgotPassword = () => {
     },
   };
 
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+
+  const [formData, setFormData] = useState({
+    newPassword: '',
+    confirmPassword: '',
+  });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [buttonHover, setButtonHover] = useState(false);
   const [buttonActive, setButtonActive] = useState(false);
   const [linkHovered, setLinkHovered] = useState(false);
-  const [createLinkHovered, setCreateLinkHovered] = useState(false);
-  const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+  if (!email) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.wrapper}>
+          <div style={styles.card}>
+            <p style={{ color: authColors.error }}>Error: Email not found. Please start the password reset process again.</p>
+            <a href="/forgot-password" style={styles.link}>Back to Forgot Password</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -97,49 +123,63 @@ const ForgotPassword = () => {
     setError('');
     setSuccess('');
 
-    if (!email) {
-      setError('Please enter your email address');
+    const { newPassword, confirmPassword } = formData;
+
+    if (!newPassword || !confirmPassword) {
+      setError('Please fill in all fields');
       return;
     }
 
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          password: newPassword,
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Code sent successfully! Check your email to continue.');
+        setSuccess('Password reset successfully! Redirecting to login...');
         setTimeout(() => {
-          navigate('/verify-otp', { state: { email, isForgotPassword: true } });
-        }, 1500);
+          navigate('/login');
+        }, 2000);
       } else {
-        setError(data.message || 'Failed to send reset code');
+        setError(data.message || 'Failed to reset password');
       }
     } catch (err) {
-      console.error('Forgot password error:', err);
-      setError(err.message || 'Unable to connect to the server. Please check your internet connection and try again.');
+      console.error('Reset password error:', err);
+      setError(err.message || 'Failed to reset password. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const emailInputStyle = {
+  const passwordInputStyle = {
     ...styles.input,
-    ...(emailFocus && styles.inputFocus),
-    ...(error && styles.inputError),
+    paddingRight: '48px',
+  };
+
+  const confirmInputStyle = {
+    ...styles.input,
+    paddingRight: '48px',
   };
 
   const buttonStyle = {
@@ -166,7 +206,7 @@ const ForgotPassword = () => {
           zIndex: 10,
         }}>
           <a
-            href="/login"
+            href="/forgot-password"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -190,7 +230,7 @@ const ForgotPassword = () => {
             }}
           >
             <span style={{ fontSize: '18px' }}>←</span>
-            Back to Sign In
+            Back
           </a>
         </div>
 
@@ -209,8 +249,8 @@ const ForgotPassword = () => {
           </div>
 
           {/* Header */}
-          <h1 style={styles.cardTitle}>Reset Password</h1>
-          <p style={styles.cardSubtitle}>Enter your registered email address and we will send a verification code to help you reset your password.</p>
+          <h1 style={styles.cardTitle}>Create New Password</h1>
+          <p style={styles.cardSubtitle}>Enter a new password for your account. Make sure it's strong and secure.</p>
 
           {/* Messages */}
           {error && (
@@ -254,28 +294,63 @@ const ForgotPassword = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
-            {/* Email Field */}
+            {/* New Password Field */}
             <div style={styles.formGroup}>
-              <label htmlFor="email" style={styles.label}>Email Address</label>
+              <label htmlFor="newPassword" style={styles.label}>New Password</label>
               <div style={styles.inputWrapper}>
                 <div style={styles.inputIcon}>
-                  <MailIcon size={20} color={authColors.textLight} />
+                  <LockIcon size={20} color={authColors.textLight} />
                 </div>
                 <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setEmailFocus(true)}
-                  onBlur={() => setEmailFocus(false)}
-                  placeholder="you@example.com"
-                  style={emailInputStyle}
+                  type={showPassword ? 'text' : 'password'}
+                  id="newPassword"
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  placeholder="Enter new password"
+                  style={passwordInputStyle}
                   disabled={loading}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={styles.passwordToggleButton}
+                  disabled={loading}
+                >
+                  {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                </button>
               </div>
             </div>
 
-            {/* Send Reset Code Button */}
+            {/* Confirm Password Field */}
+            <div style={styles.formGroup}>
+              <label htmlFor="confirmPassword" style={styles.label}>Confirm Password</label>
+              <div style={styles.inputWrapper}>
+                <div style={styles.inputIcon}>
+                  <LockIcon size={20} color={authColors.textLight} />
+                </div>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your password"
+                  style={confirmInputStyle}
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  style={styles.passwordToggleButton}
+                  disabled={loading}
+                >
+                  {showConfirm ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Reset Password Button */}
             <button
               type="submit"
               disabled={loading}
@@ -288,10 +363,10 @@ const ForgotPassword = () => {
               {loading ? (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⟳</span>
-                  Sending...
+                  Resetting...
                 </span>
               ) : (
-                'Send Reset Code'
+                'Reset Password'
               )}
             </button>
           </form>
@@ -301,4 +376,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

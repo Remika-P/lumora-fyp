@@ -14,8 +14,8 @@ export const authColors = {
   white: '#FFFFFF',
   error: '#8B3A3A',
   errorLight: '#E8B4AF',
-  errorBg: 'rgba(242, 220, 219, 0.6)',
-  errorBorder: 'rgba(239, 204, 193, 0.8)',
+  errorBg: 'rgba(232, 224, 208, 0.3)',
+  errorBorder: 'rgba(217, 204, 189, 0.4)',
   success: '#2E5D4F',
   successLight: '#E8F5E9',
   successBorder: 'rgba(200, 230, 201, 0.8)',
@@ -78,11 +78,10 @@ export const createBaseStyles = () => ({
   card: {
     width: '100%',
     padding: '80px 52px 56px 52px',
-    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    backgroundColor: '#FFFFFF',
     borderRadius: '32px',
-    boxShadow: '0 60px 100px rgba(107, 93, 80, 0.18), 0 20px 40px rgba(107, 93, 80, 0.1), 0 4px 12px rgba(107, 93, 80, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 1px rgba(0, 0, 0, 0.02)',
-    backdropFilter: 'blur(30px)',
-    border: `1px solid rgba(217, 204, 189, 0.5)`,
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.08)',
+    border: 'none',
     animation: 'slideUp 0.9s ease-out',
     position: 'relative',
   },
@@ -107,11 +106,11 @@ export const createBaseStyles = () => ({
     opacity: 0.85,
   },
   errorMessage: {
-    padding: '14px 18px 14px 16px',
+    padding: '0',
     marginBottom: '28px',
-    backgroundColor: authColors.errorBg,
-    border: `1px solid ${authColors.errorBorder}`,
-    borderRadius: '16px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: '0',
     color: authColors.error,
     fontSize: '14px',
     fontWeight: '500',
@@ -121,11 +120,11 @@ export const createBaseStyles = () => ({
     animation: 'slideDown 0.4s ease-out',
   },
   successMessage: {
-    padding: '14px 18px 14px 16px',
+    padding: '0',
     marginBottom: '28px',
-    backgroundColor: 'rgba(232, 245, 233, 0.7)',
-    border: `1px solid ${authColors.successBorder}`,
-    borderRadius: '16px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: '0',
     color: authColors.success,
     fontSize: '14px',
     fontWeight: '500',
@@ -167,7 +166,7 @@ export const createBaseStyles = () => ({
     color: authColors.text,
     fontWeight: '500',
     letterSpacing: '0.2px',
-    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.02), inset 0 -1px 2px rgba(0, 0, 0, 0.01)',
+    boxShadow: 'none',
   },
   inputPassword: {
     paddingRight: '48px',
@@ -175,7 +174,6 @@ export const createBaseStyles = () => ({
   inputFocus: {
     borderColor: authColors.primary,
     backgroundColor: authColors.white,
-    boxShadow: `0 0 0 5px rgba(217, 204, 189, 0.12)`,
   },
   inputError: {
     borderColor: authColors.errorLight,
@@ -302,8 +300,7 @@ export const createBaseStyles = () => ({
     paddingBottom: '1px',
   },
   linkHover: {
-    color: authColors.textSecondary,
-    borderBottomColor: authColors.textSecondary,
+    color: '#D9CCBD',
   },
 });
 
@@ -465,5 +462,18 @@ export const animationStyles = `
   input::selection {
     background-color: rgba(217, 204, 189, 0.3);
     color: #5A4A3F;
+  }
+
+  /* Hide scrollbar for Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbar for Chrome/Safari/Edge */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
   }
 `;

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Dashboard from "./Dashboard";
 import Quiz from "./Quiz";
 import QuizResults from "./QuizResults";
 import Login from "./Login";
 import Signup from "./Signup";
 import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 import OTPVerification from "./OTPVerification";
 import VerifyOTP from "./VerifyOTP";
 import Recommendations from "./Recommendations";
@@ -109,15 +111,19 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/signup" element={isAuthenticated ? <Navigate to="/" /> : <Signup setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/forgot-password" element={isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />} />
-        <Route path="/verify-otp" element={isAuthenticated ? <Navigate to="/" /> : <OTPVerification />} />
-        <Route path="/" element={isAuthenticated ? <MainApp setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Router>
+        <Routes>
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/forgot-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
+          <Route path="/reset-password" element={isAuthenticated ? <Navigate to="/dashboard" /> : <ResetPassword />} />
+          <Route path="/verify-otp" element={isAuthenticated ? <Navigate to="/dashboard" /> : <OTPVerification setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/dashboard" element={isAuthenticated ? <MainApp setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 

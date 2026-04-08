@@ -45,16 +45,16 @@ options: [
 id: 5,
 question: "Which interior style do you naturally feel most attracted to?",
 options: [
-{ text: "Minimalist", scores: { minimalist: 6 } },
-{ text: "Japandi", scores: { japandi: 6 } },
-{ text: "Scandinavian", scores: { scandinavian: 6 } },
-{ text: "Farmhouse", scores: { farmhouse: 6 } },
-{ text: "Bohemian", scores: { bohemian: 6 } },
-{ text: "Traditional", scores: { traditional: 6 } },
-{ text: "Industrial", scores: { industrial: 6 } },
-{ text: "Coastal", scores: { coastal: 6 } },
-{ text: "Mid-Century Modern", scores: { midcentury: 6 } },
-{ text: "Modern", scores: { modern: 6 } }
+{ text: "Minimalist", scores: { minimalist: 6 }, image: "/styles/minimalist.jpg" },
+{ text: "Japandi", scores: { japandi: 6 }, image: "/styles/japandi.jpg" },
+{ text: "Scandinavian", scores: { scandinavian: 6 }, image: "/styles/scandinavian.jpg" },
+{ text: "Farmhouse", scores: { farmhouse: 6 }, image: "/styles/farmhouse.jpg" },
+{ text: "Bohemian", scores: { bohemian: 6 }, image: "/styles/bohemian.jpg" },
+{ text: "Traditional", scores: { traditional: 6 }, image: "/styles/traditional.jpg" },
+{ text: "Industrial", scores: { industrial: 6 }, image: "/styles/industrial.jpg" },
+{ text: "Coastal", scores: { coastal: 6 }, image: "/styles/coastal.jpg" },
+{ text: "Mid-Century Modern", scores: { midcentury: 6 }, image: "/styles/midcentury.jpg" },
+{ text: "Modern", scores: { modern: 6 }, image: "/styles/modern.jpg" }
 ]
 },
 
@@ -208,6 +208,23 @@ options: [
 { text: "Real homes / friends", scores: { farmhouse: 2, coastal: 1 } },
 { text: "Designers", scores: { traditional: 2, modern: 1 } },
 { text: "Online stores", scores: { minimalist: 2, modern: 1 } }
+]
+},
+
+{
+id: 20,
+question: "Select the room you feel most connected to:",
+options: [
+{ text: "Minimalist Interior Style", scores: { minimalist: 5 }, image: "/styles/minimalist.jpg" },
+{ text: "Japandi Interior Style", scores: { japandi: 5 }, image: "/styles/japandi.jpg" },
+{ text: "Scandinavian Interior Style", scores: { scandinavian: 5 }, image: "/styles/scandinavian.jpg" },
+{ text: "Farmhouse Interior Style", scores: { farmhouse: 5 }, image: "/styles/farmhouse.jpg" },
+{ text: "Bohemian Interior Style", scores: { bohemian: 5 }, image: "/styles/bohemian.jpg" },
+{ text: "Traditional Interior Style", scores: { traditional: 5 }, image: "/styles/traditional.jpg" },
+{ text: "Industrial Interior Style", scores: { industrial: 5 }, image: "/styles/industrial.jpg" },
+{ text: "Coastal Interior Style", scores: { coastal: 5 }, image: "/styles/coastal.jpg" },
+{ text: "Mid-Century Modern Style", scores: { midcentury: 5 }, image: "/styles/midcentury.jpg" },
+{ text: "Modern Interior Style", scores: { modern: 5 }, image: "/styles/modern.jpg" }
 ]
 }
 

@@ -6,7 +6,7 @@ const styles = {
     width: '100vw',
     display: 'flex',
     background: 'linear-gradient(135deg, #F5F1ED 0%, #EAE0D5 100%)',
-    fontFamily: '"Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: '"Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     padding: '0',
     margin: '0',
     position: 'relative',
@@ -14,206 +14,280 @@ const styles = {
     right: '50%',
     marginLeft: 'calc(-50vw)',
     marginRight: 'calc(-50vw)',
+    overflow: 'hidden',
+  },
+  blurElement1: {
+    position: 'absolute',
+    width: '800px',
+    height: '800px',
+    background: 'radial-gradient(circle, rgba(200, 189, 170, 0.15) 0%, rgba(200, 189, 170, 0.05) 40%, rgba(200, 189, 170, 0) 70%)',
+    borderRadius: '50%',
+    top: '-300px',
+    left: '-300px',
+    filter: 'blur(60px)',
+    pointerEvents: 'none',
+    animation: 'softPulse 8s ease-in-out infinite',
+  },
+  blurElement2: {
+    position: 'absolute',
+    width: '600px',
+    height: '600px',
+    background: 'radial-gradient(circle, rgba(200, 189, 170, 0.12) 0%, rgba(200, 189, 170, 0.04) 50%, rgba(200, 189, 170, 0) 70%)',
+    borderRadius: '50%',
+    bottom: '-200px',
+    right: '-200px',
+    filter: 'blur(50px)',
+    pointerEvents: 'none',
+    animation: 'softPulse 10s ease-in-out infinite 1s',
   },
   header: {
     position: 'absolute',
     top: '0',
     width: '100%',
-    padding: '24px 40px',
+    padding: '16px 40px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     zIndex: 100,
+    background: 'rgba(255, 255, 255, 0.25)',
+    backdropFilter: 'blur(12px)',
+    borderBottom: '1px solid rgba(217, 204, 189, 0.15)',
   },
   logo: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#5A4A3F',
-    letterSpacing: '-0.5px',
-  },
-  logoutButton: {
-    padding: '10px 24px',
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#FFFFFF',
-    backgroundColor: '#9B8B7E',
-    border: 'none',
-    borderRadius: '8px',
+    width: '60px',
+    height: '60px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #F5F1ED 0%, #EAE0D5 100%)',
+    boxShadow: '0 8px 24px rgba(217, 204, 189, 0.2)',
+    overflow: 'hidden',
+    position: 'relative',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
+  },
+  logoImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: '50%',
+  },
+  logoutButton: {
+    padding: '12px 28px',
+    fontSize: '12px',
+    fontWeight: '600',
+    color: '#FFFFFF',
+    backgroundColor: '#D9CCBD',
+    border: 'none',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
     textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    boxShadow: '0 4px 12px rgba(155, 139, 126, 0.2)',
+    letterSpacing: '0.6px',
+    boxShadow: '0 8px 24px rgba(217, 204, 189, 0.3)',
   },
   wrapper: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
-    padding: '100px 40px 40px',
+    padding: '70px 40px 40px',
     justifyContent: 'center',
     alignItems: 'center',
+    animation: 'fadeIn 0.9s ease-out',
+    position: 'relative',
+    zIndex: 10,
   },
   content: {
     width: '100%',
     maxWidth: '900px',
     margin: '0 auto',
+    animation: 'slideUp 0.9s ease-out',
   },
   mainCard: {
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.99)',
-    borderRadius: '20px',
-    boxShadow: '0 20px 60px rgba(107, 93, 80, 0.15), 0 4px 12px rgba(107, 93, 80, 0.08)',
-    backdropFilter: 'blur(10px)',
+    maxWidth: '820px',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderRadius: '28px',
+    boxShadow: '0 60px 100px rgba(107, 93, 80, 0.18), 0 20px 40px rgba(107, 93, 80, 0.1), 0 4px 12px rgba(107, 93, 80, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 1px rgba(0, 0, 0, 0.02)',
+    backdropFilter: 'blur(30px)',
     border: '1px solid rgba(217, 204, 189, 0.5)',
     overflow: 'hidden',
-    animation: 'slideUp 0.7s ease-out',
+    animation: 'slideUp 0.9s ease-out',
   },
   cardHeader: {
-    padding: '40px 48px',
-    borderBottom: '1px solid #E8DDD0',
+    padding: '48px 48px 28px',
+    borderBottom: '1px solid rgba(232, 221, 208, 0.3)',
+    background: 'linear-gradient(180deg, rgba(250, 248, 245, 0.3) 0%, rgba(248, 244, 240, 0) 100%)',
   },
   cardBody: {
-    padding: '40px 48px',
+    padding: '44px 48px',
   },
   greeting: {
-    fontSize: '28px',
-    fontWeight: '700',
+    fontSize: '36px',
+    fontWeight: '600',
     color: '#5A4A3F',
-    marginBottom: '8px',
-    letterSpacing: '-0.4px',
+    marginBottom: '6px',
+    letterSpacing: '-1.2px',
+    fontFamily: '"Playfair Display", serif',
+    lineHeight: '1.2',
   },
   userEmail: {
     fontSize: '14px',
-    color: '#9B8B7E',
-    fontWeight: '500',
+    color: '#9B8B7F',
+    fontWeight: '400',
+    letterSpacing: '0.4px',
+    opacity: 0.85,
   },
   sectionTitle: {
-    fontSize: '16px',
-    fontWeight: '700',
+    fontSize: '12px',
+    fontWeight: '600',
     color: '#5A4A3F',
     textTransform: 'uppercase',
     letterSpacing: '0.8px',
-    marginBottom: '20px',
+    marginBottom: '24px',
+    opacity: 0.9,
   },
   styleShowcase: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '24px',
+    gap: '40px',
     alignItems: 'center',
+    marginBottom: '40px',
   },
   styleName: {
     fontSize: '48px',
-    fontWeight: '700',
-    color: '#C8BDAA',
-    marginBottom: '16px',
-    lineHeight: '1',
+    fontWeight: '600',
+    color: '#5A4A3F',
+    marginBottom: '18px',
+    lineHeight: '1.2',
+    fontFamily: '"Playfair Display", serif',
+    letterSpacing: '-0.8px',
   },
   styleDescription: {
-    fontSize: '15px',
+    fontSize: '14px',
     color: '#5A4A3F',
     lineHeight: '1.8',
     marginBottom: '24px',
+    letterSpacing: '0.2px',
+    fontWeight: '400',
   },
   styleCharacteristics: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px',
-    marginTop: '20px',
+    gap: '0',
+    marginTop: '0',
   },
   characteristic: {
     display: 'flex',
     alignItems: 'center',
-    fontSize: '13px',
+    fontSize: '14px',
     color: '#5A4A3F',
+    padding: '12px 0',
+    borderBottom: '1px solid rgba(232, 221, 208, 0.3)',
+    fontWeight: '400',
+    letterSpacing: '0.2px',
   },
   characteristicIcon: {
     display: 'inline-block',
     width: '20px',
     height: '20px',
-    backgroundColor: '#C8BDAA',
+    backgroundColor: '#D9CCBD',
     borderRadius: '50%',
     marginRight: '12px',
     flexShrink: 0,
     textAlign: 'center',
     lineHeight: '20px',
     color: '#FFFFFF',
-    fontSize: '11px',
-    fontWeight: 'bold',
+    fontSize: '12px',
+    fontWeight: '600',
+    boxShadow: '0 4px 12px rgba(217, 204, 189, 0.25)',
+    transition: 'all 0.3s ease',
   },
   styleBox: {
-    backgroundColor: '#F5F1ED',
-    padding: '32px',
-    borderRadius: '14px',
-    border: '2px solid #E8DDD0',
+    backgroundColor: 'rgba(245, 241, 237, 0.6)',
+    padding: '40px 32px',
+    borderRadius: '20px',
+    border: '1.5px solid rgba(232, 221, 208, 0.5)',
     textAlign: 'center',
+    boxShadow: '0 8px 24px rgba(107, 93, 80, 0.08)',
   },
   styleLabel: {
-    fontSize: '12px',
-    color: '#9B8B7E',
+    fontSize: '11px',
+    color: '#9B8B7F',
     textTransform: 'uppercase',
-    letterSpacing: '0.6px',
-    marginBottom: '16px',
+    letterSpacing: '0.8px',
+    marginBottom: '12px',
     fontWeight: '600',
+    opacity: 0.8,
   },
   noStyleBox: {
-    backgroundColor: '#F5F1ED',
-    padding: '40px 32px',
-    borderRadius: '14px',
-    border: '2px dashed #E8DDD0',
+    backgroundColor: 'rgba(245, 241, 237, 0.6)',
+    padding: '48px 40px',
+    borderRadius: '20px',
+    border: '1.5px solid rgba(232, 221, 208, 0.5)',
     textAlign: 'center',
+    boxShadow: '0 8px 24px rgba(107, 93, 80, 0.08)',
   },
   noStyleText: {
-    fontSize: '16px',
-    color: '#9B8B7E',
-    marginBottom: '20px',
-    lineHeight: '1.6',
+    fontSize: '15px',
+    color: '#5A4A3F',
+    marginBottom: '28px',
+    lineHeight: '1.7',
+    fontWeight: '400',
   },
   cardFooter: {
-    padding: '24px 48px',
-    borderTop: '1px solid #E8DDD0',
+    padding: '36px 48px',
+    borderTop: '1px solid rgba(232, 221, 208, 0.3)',
     display: 'flex',
-    gap: '12px',
+    gap: '16px',
     justifyContent: 'center',
+    background: 'linear-gradient(180deg, rgba(250, 248, 245, 0) 0%, rgba(248, 244, 240, 0.2) 100%)',
   },
   button: {
-    padding: '12px 32px',
+    padding: '13px 36px',
     fontSize: '12px',
-    fontWeight: '650',
-    border: '2px solid #C8BDAA',
-    borderRadius: '10px',
+    fontWeight: '600',
+    border: 'none',
+    borderRadius: '16px',
     cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
     textTransform: 'uppercase',
     letterSpacing: '0.6px',
   },
   primaryButton: {
-    backgroundColor: '#C8BDAA',
-    color: '#FFFFFF',
+    backgroundColor: '#D9CCBD',
+    color: '#5A4A3F',
+    boxShadow: '0 12px 32px rgba(217, 204, 189, 0.3)',
   },
   secondaryButton: {
     backgroundColor: 'transparent',
     color: '#C8BDAA',
   },
   tipBox: {
-    marginTop: '32px',
-    padding: '16px 20px',
-    backgroundColor: '#FAFAF9',
-    borderLeft: '4px solid #C8BDAA',
-    borderRadius: '4px',
+    marginTop: '40px',
+    padding: '24px 28px',
+    backgroundColor: 'rgba(245, 241, 237, 0.5)',
+    borderLeft: '4px solid #D9CCBD',
+    borderRadius: '16px',
+    border: '1px solid rgba(232, 221, 208, 0.3)',
+    boxShadow: '0 4px 12px rgba(107, 93, 80, 0.06)',
   },
   tipLabel: {
     fontSize: '11px',
-    fontWeight: '700',
-    color: '#9B8B7E',
+    fontWeight: '600',
+    color: '#9B8B7F',
     textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    marginBottom: '6px',
+    letterSpacing: '0.6px',
+    marginBottom: '8px',
   },
   tipText: {
-    fontSize: '13px',
+    fontSize: '14px',
     color: '#5A4A3F',
-    lineHeight: '1.6',
+    lineHeight: '1.7',
+    fontWeight: '400',
+    letterSpacing: '0.2px',
   },
 };
 
@@ -267,6 +341,8 @@ export default function Dashboard({ selectedStyle, onRetakeQuiz, onLogout, onVie
   return (
     <div style={styles.container}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -281,20 +357,41 @@ export default function Dashboard({ selectedStyle, onRetakeQuiz, onLogout, onVie
             transform: translateY(0);
           }
         }
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes softPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
       `}</style>
 
+      <div style={styles.blurElement1}></div>
+      <div style={styles.blurElement2}></div>
+
       <div style={styles.header}>
-        <div style={styles.logo}>Lumora</div>
+        <div style={styles.logo}>
+          <img src="/Lumora.jpg" alt="Lumora Logo" style={styles.logoImg} />
+        </div>
         <button
           style={styles.logoutButton}
           onClick={handleLogout}
           onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#7A6A59';
-            e.target.style.boxShadow = '0 6px 16px rgba(155, 139, 126, 0.3)';
+            e.target.style.backgroundColor = '#C8BDAA';
+            e.target.style.boxShadow = '0 16px 40px rgba(217, 204, 189, 0.4)';
+            e.target.style.transform = 'translateY(-3px)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.backgroundColor = '#9B8B7E';
-            e.target.style.boxShadow = '0 4px 12px rgba(155, 139, 126, 0.2)';
+            e.target.style.backgroundColor = '#D9CCBD';
+            e.target.style.boxShadow = '0 8px 24px rgba(217, 204, 189, 0.3)';
+            e.target.style.transform = 'translateY(0)';
           }}
         >
           Logout
@@ -373,8 +470,16 @@ export default function Dashboard({ selectedStyle, onRetakeQuiz, onLogout, onVie
                   <button
                     style={{ ...styles.button, ...styles.primaryButton }}
                     onClick={onRetakeQuiz}
-                    onMouseEnter={(e) => e.target.style.boxShadow = '0 6px 20px rgba(200, 189, 170, 0.3)'}
-                    onMouseLeave={(e) => e.target.style.boxShadow = 'none'}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#C8BDAA';
+                      e.target.style.boxShadow = '0 16px 40px rgba(217, 204, 189, 0.4)';
+                      e.target.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = '#D9CCBD';
+                      e.target.style.boxShadow = '0 12px 32px rgba(217, 204, 189, 0.3)';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
                   >
                     Start Quiz
                   </button>
@@ -387,8 +492,16 @@ export default function Dashboard({ selectedStyle, onRetakeQuiz, onLogout, onVie
                 <button
                   style={{ ...styles.button, ...styles.primaryButton }}
                   onClick={onRetakeQuiz}
-                  onMouseEnter={(e) => e.target.style.boxShadow = '0 6px 20px rgba(200, 189, 170, 0.3)'}
-                  onMouseLeave={(e) => e.target.style.boxShadow = 'none'}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#C8BDAA';
+                    e.target.style.boxShadow = '0 16px 40px rgba(217, 204, 189, 0.4)';
+                    e.target.style.transform = 'translateY(-3px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#D9CCBD';
+                    e.target.style.boxShadow = '0 12px 32px rgba(217, 204, 189, 0.3)';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
                 >
                   Retake Quiz
                 </button>
@@ -398,11 +511,13 @@ export default function Dashboard({ selectedStyle, onRetakeQuiz, onLogout, onVie
                   style={{ ...styles.button, ...styles.primaryButton }}
                   onClick={onViewRecommendations}
                   onMouseEnter={(e) => {
-                    e.target.style.boxShadow = '0 6px 20px rgba(200, 189, 170, 0.3)';
-                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.backgroundColor = '#C8BDAA';
+                    e.target.style.boxShadow = '0 16px 40px rgba(217, 204, 189, 0.4)';
+                    e.target.style.transform = 'translateY(-3px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.boxShadow = 'none';
+                    e.target.style.backgroundColor = '#D9CCBD';
+                    e.target.style.boxShadow = '0 12px 32px rgba(217, 204, 189, 0.3)';
                     e.target.style.transform = 'translateY(0)';
                   }}
                 >
